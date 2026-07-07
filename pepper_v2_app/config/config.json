@@ -1,0 +1,85 @@
+{
+  "general": {
+    "user_age": 100,
+    "languages": ["en", "es"],
+    "max_turns": 3,
+    "word_count": 30
+  },
+
+  "writer_llm": {
+    "model": "qwen2.5:0.5b-instruct-q4_K_M",
+    "temperature": 0.0,
+    "max_tokens": 4096,
+    "default_model": "qwen2.5:3b-instruct-q4_K_M"
+  },
+
+  "judge_llm": {
+    "model": "qwen2.5:0.5b-instruct-q4_K_M",
+    "temperature": 0.0,
+    "max_tokens": 256,
+    "default_model": "qwen2.5:3b-instruct-q4_K_M"
+  },
+
+  "speech_recognition": {
+    "model": "base"
+  },
+
+  "keybinds": {
+    "listen_key": "end",
+    "stop_key": "home",
+    "exit_key": "esc"
+  },
+
+  "logging": {
+    "log_conversation": true,
+    "verbose": false
+  },
+
+  "network": {
+    "show_ipv4_on_start": true,
+    "host": "0.0.0.0",
+    "port": 8000
+  },
+
+  "ssh": {
+    "enabled": false,
+    "host": "",
+    "port": 22
+  },  
+
+  "web_ui": {
+    "should_use": false,
+    "use_background": false
+  },
+
+  "pepper": {
+    "should_use": false,
+    "volume": 80
+  },
+
+  "_notes": {
+
+    "_llm_models": [
+      "qwen2.5:7b-instruct-q4_K_M",
+      "qwen2.5:3b-instruct-q4_K_M",
+      "qwen2.5:1.5b-instruct-q4_K_M",
+      "qwen2.5:0.5b-instruct-q4_K_M",
+      "gemma:2b-instruct-q4_K_M",
+      "llama3.2"
+    ],
+
+    "_ollama_install_examples": [
+      "ollama pull qwen2.5:7b-instruct-q4_K_M",
+      "ollama pull gemma:2b-instruct-q4_K_M"
+    ],
+
+    "_whisper_models": [
+        "tiny", 
+        "base",
+        "small",
+        "medium",
+        "large"
+    ]
+  }
+
+}

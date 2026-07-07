@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+
+	<title>Pepper UI</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+
+	<style>
+		body {
+			margin: 0;
+			color: #2b1a0b;
+			font-family: Verdana, Arial, sans-serif;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			overflow: hidden;
+			background-image: url("assets/pirate-background.png");
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+
+		.wrap {
+			width: 88%;
+			max-width: 1120px;
+			position: relative;
+			z-index: 1;
+			margin: 0 auto;
+		}
+
+		.mode {
+			text-align: center;
+			font-family: "IM Fell English SC", Georgia, serif;
+			font-size: 60px;
+			font-weight: normal;
+			letter-spacing: 1px;
+			margin-bottom: 10px;
+			text-shadow: 2px 2px 0 rgba(255, 244, 210, 0.85);
+		}
+
+		.card {
+			background: rgba(78, 42, 17, 0.82);
+			border: 3px solid rgba(255, 214, 132, 0.72);
+			border-radius: 18px;
+			padding: 18px 24px;
+			margin-bottom: 16px;
+			box-sizing: border-box;
+			box-shadow: 0 8px 20px rgba(45, 22, 5, 0.35);
+		}
+
+		.label {
+			font-family: "IM Fell English SC", Georgia, serif;
+			font-size: 28px;
+			font-weight: normal;
+			letter-spacing: 0.5px;
+			color: #ffe4a3;
+			text-shadow: 2px 2px 0 #1b0d03;
+			margin-bottom: 8px;
+			display: block;
+		}
+
+		.text {
+			font-family: Verdana, Arial, sans-serif;
+			font-size: 20px;
+			line-height: 1.15;
+			word-break: break-word;
+			min-height: 42px;
+			color: #fff7db;
+			text-shadow: 1px 1px 0 #1b0d03;
+			width: auto;
+		}
+
+		.idle {
+			color: #4b2b10;
+		}
+
+		.listening {
+			color: #006b8f;
+		}
+
+		.thinking {
+			color: #9b6400;
+		}
+
+		.speaking {
+			color: #1f6d2f;
+		}
+
+		.loading {
+			color: #4b2b10;
+		}
+
+		.disconnected {
+			color: #9b1c1c;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="wrap">
+		<div class="mode loading" id="mode">JS NOT RUNNING</div>
+
+		<div class="card">
+			<div class="label">Heard</div>
+			<div class="text" id="heard"></div>
+		</div>
+
+		<div class="card">
+			<div class="label">Reply</div>
+			<div class="text" id="reply"></div>
+		</div>
+	</div>
+
+	<script>
+		var lastStateText = "";
+
+		document.getElementById("mode").innerText = "LOADING";
+
+		function applyState(state) {
+			var mode = state.mode || "idle";
+			var modeText = state.mode_text || mode.toUpperCase();
+			var heard = state.heard || "";
+			var reply = state.reply || "";
+
+			var modeElement = document.getElementById("mode");
+			var heardElement = document.getElementById("heard");
+			var replyElement = document.getElementById("reply");
+
+			modeElement.className = "mode " + mode;
+			modeElement.innerText = modeText;
+			heardElement.innerText = heard;
+			replyElement.innerText = reply;
+		}
+
+		function updateState() {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "state.json?v=" + new Date().getTime(), true);
+
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState !== 4) {
+					return;
+				}
+
+				if (xhr.status !== 200) {
+					document.getElementById("mode").className = "mode disconnected";
+					document.getElementById("mode").innerText = "STATE " + xhr.status;
+					return;
+				}
+
+				var stateText = xhr.responseText;
+
+				if (stateText === lastStateText) {
+					return;
+				}
+
+				lastStateText = stateText;
+
+				try {
+					var state = JSON.parse(stateText);
+					applyState(state);
+				} catch (error) {
+					document.getElementById("mode").className = "mode disconnected";
+					document.getElementById("mode").innerText = "JSON ERROR";
+					document.getElementById("reply").innerText = error.toString();
+				}
+			};
+
+			xhr.onerror = function () {
+				document.getElementById("mode").className = "mode disconnected";
+				document.getElementById("mode").innerText = "DISCONNECTED";
+				document.getElementById("reply").innerText = "";
+			};
+
+			xhr.send();
+		}
+
+		updateState();
+		setInterval(updateState, 500);
+	</script>
+</body>
+</html>

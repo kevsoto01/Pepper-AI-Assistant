@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+
+	<title>Pepper UI</title>
+
+	<style>
+		body {
+			margin: 0;
+			background: #101010;
+			color: white;
+			font-family: Arial, sans-serif;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			overflow: hidden;
+		}
+
+		.wrap {
+			width: 88%;
+			max-width: 1120px;
+			position: relative;
+			z-index: 1;
+			margin: 0 auto;
+		}
+
+		.mode {
+			text-align: center;
+			font-family: Arial, sans-serif;
+			font-size: 50px;
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		.card {
+			background: #1d1d1d;
+			border-radius: 18px;
+			padding: 18px 24px;
+			margin-bottom: 16px;
+			box-sizing: border-box;
+		}
+
+		.label {
+			font-family: Arial, sans-serif;
+			font-size: 20px;
+			opacity: 0.7;
+			margin-bottom: 8px;
+		}
+
+		.text {
+			font-family: Arial, sans-serif;
+			font-size: 25px;
+			line-height: 1.35;
+			word-break: break-word;
+			min-height: 42px;
+			color: white;
+			width: auto;
+		}
+
+		.idle {
+			color: #d0d0d0;
+		}
+
+		.listening {
+			color: #7fd1ff;
+		}
+
+		.thinking {
+			color: #ffd36e;
+		}
+
+		.speaking {
+			color: #8cff96;
+		}
+
+		.loading {
+			color: #ffffff;
+		}
+
+		.disconnected {
+			color: #ff7777;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="wrap">
+		<div class="mode loading" id="mode">JS NOT RUNNING</div>
+
+		<div class="card">
+			<div class="label">Heard</div>
+			<div class="text" id="heard"></div>
+		</div>
+
+		<div class="card">
+			<div class="label">Reply</div>
+			<div class="text" id="reply"></div>
+		</div>
+	</div>
+
+	<script>
+		var lastStateText = "";
+
+		document.getElementById("mode").innerText = "JS RUNNING";
+
+		function applyState(state) {
+			var mode = state.mode || "idle";
+			var modeText = state.mode_text || mode.toUpperCase();
+			var heard = state.heard || "";
+			var reply = state.reply || "";
+
+			var modeElement = document.getElementById("mode");
+			var heardElement = document.getElementById("heard");
+			var replyElement = document.getElementById("reply");
+
+			modeElement.className = "mode " + mode;
+			modeElement.innerText = modeText;
+			heardElement.innerText = heard;
+			replyElement.innerText = reply;
+		}
+
+		function updateState() {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "state.json?v=" + new Date().getTime(), true);
+
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState !== 4) {
+					return;
+				}
+
+				if (xhr.status !== 200) {
+					document.getElementById("mode").className = "mode disconnected";
+					document.getElementById("mode").innerText = "STATE " + xhr.status;
+					return;
+				}
+
+				var stateText = xhr.responseText;
+
+				if (stateText === lastStateText) {
+					return;
+				}
+
+				lastStateText = stateText;
+
+				try {
+					var state = JSON.parse(stateText);
+					applyState(state);
+				} catch (error) {
+					document.getElementById("mode").className = "mode disconnected";
+					document.getElementById("mode").innerText = "JSON ERROR";
+					document.getElementById("reply").innerText = error.toString();
+				}
+			};
+
+			xhr.onerror = function () {
+				document.getElementById("mode").className = "mode disconnected";
+				document.getElementById("mode").innerText = "DISCONNECTED";
+				document.getElementById("reply").innerText = "";
+			};
+
+			xhr.send();
+		}
+
+		updateState();
+		setInterval(updateState, 500);
+	</script>
+</body>
+</html>

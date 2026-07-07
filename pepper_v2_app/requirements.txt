@@ -1,0 +1,4 @@
+keyboard
+ollama
+piper-tts
+faster-whisper

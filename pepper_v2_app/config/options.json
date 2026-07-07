@@ -1,0 +1,96 @@
+{
+  "app": {
+    "name": "Pepper Assistant",
+    "debug": true,
+    "startup_message": true
+  },
+
+  "llm": {
+    "provider": "ollama",
+    "ollama_base_url": "http://localhost:11434",
+    "active_model": "qwen2.5:7b-instruct-q4_K_M",
+    "fallback_model": "gemma:2b-instruct-q4_K_M",
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 512,
+    "system_prompt": "You are Pepper, a helpful classroom assistant. Keep answers clear, short, and useful."
+  },
+
+  "models": {
+    "available": [
+      "qwen2.5:7b-instruct-q4_K_M",
+      "gemma:2b-instruct-q4_K_M",
+      "llama3.2"
+    ]
+  },
+
+  "speech_recognition": {
+    "provider": "faster-whisper",
+    "model": "base",
+    "device": "cpu",
+    "compute_type": "int8",
+    "language": "en",
+    "vad_filter": true
+  },
+
+  "tts": {
+    "provider": "piper",
+    "enabled": true,
+    "voice_model": "models/piper/en_US-lessac-medium.onnx",
+    "voice_config": "models/piper/en_US-lessac-medium.onnx.json",
+    "speaker_id": null,
+    "length_scale": 1.0,
+    "noise_scale": 0.667,
+    "noise_w": 0.8
+  },
+
+  "audio": {
+    "input_device": null,
+    "output_device": null,
+    "sample_rate": 16000,
+    "channels": 1,
+    "record_seconds": 5,
+    "silence_threshold": 500,
+    "save_recordings": false,
+    "recordings_dir": "temp/recordings"
+  },
+
+  "keyboard": {
+    "enabled": true,
+    "listen_key": "end",
+    "cancel_speech_key": "home",
+    "exit_key": "esc",
+    "toggle_mute_key": "m",
+    "push_to_talk": true
+  },
+
+  "logging": {
+    "enabled": true,
+    "level": "INFO",
+    "log_to_file": true,
+    "log_file": "logs/pepper.log"
+  },
+
+  "network": {
+    "show_ipv4_on_start": true,
+    "host": "0.0.0.0",
+    "port": 8000
+  },
+
+  "ssh": {
+    "enabled": false,
+    "host": "",
+    "port": 22,
+    "username": "",
+    "password": "",
+    "key_file": ""
+  },
+
+  "_notes": {
+    "json_comments": "JSON does not support real comments, so use _notes fields like this.",
+    "ollama_install_examples": [
+      "ollama pull qwen2.5:7b-instruct-q4_K_M",
+      "ollama pull gemma:2b-instruct-q4_K_M"
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Pepper UI</title>
+  <style>
+    body {
+      margin: 0;
+      background: #101010;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: 92%;
+      max-width: 1000px;
+    }
+
+    .mode {
+      text-align: center;
+      font-size: 54px;
+      font-weight: bold;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: #1d1d1d;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    .label {
+      font-size: 20px;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
+
+    .text {
+      font-size: 30px;
+      line-height: 1.35;
+      word-break: break-word;
+      min-height: 40px;
+    }
+
+    .idle { color: #d0d0d0; }
+    .listening { color: #7fd1ff; }
+    .thinking { color: #ffd36e; }
+    .speaking { color: #8cff96; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="mode {{MODE_CLASS}}" id="mode">{{MODE_TEXT}}</div>
+
+    <div class="card">
+      <div class="label">Heard</div>
+      <div class="text" id="heard">{{HEARD}}</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Reply</div>
+      <div class="text" id="reply">{{REPLY}}</div>
+    </div>
+  </div>
+</body>
+</html>
