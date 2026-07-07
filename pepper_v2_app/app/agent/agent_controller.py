@@ -54,36 +54,36 @@ class AIAgentController:
     # ------------------------------------------------------------------
     # Main pipeline
     # ------------------------------------------------------------------
-    def answer_question(self, audio_input, use_llm=True):
-        if audio_input is None:
-            return None
+    # def answer_question(self, audio_input, use_llm=True):
+    #     if audio_input is None:
+    #         return None
 
-        # Speech Recognition
-        print("Transcribing...")
-        user_text, detected_language = self.transcribe_audio(audio_input)
+    #     # Speech Recognition
+    #     print("Transcribing...")
+    #     user_text, detected_language = self.transcribe_audio(audio_input)
 
-        print(f"Heard: {user_text} ({detected_language})")
-        self.set_status(status="thinking", heard=user_text)
+    #     print(f"Heard: {user_text} ({detected_language})")
+    #     self.set_status(status="thinking", heard=user_text)
 
 
-        # if self.llm.should_sing_birthday_song(user_text):
-        #     return True
+    #     # if self.llm.should_sing_birthday_song(user_text):
+    #     #     return True
 
-        # Answer Generation
-        print("Generating response...")
-        response = self.response_router(user_text, detected_language, use_llm=use_llm)
-        response = self.remove_formatting(response)
+    #     # Answer Generation
+    #     print("Generating response...")
+    #     response = self.response_router(user_text, detected_language, use_llm=use_llm)
+    #     response = self.remove_formatting(response)
 
-        print(f"LLM Response: {response}")
-        self.set_status(status="speaking", reply=response)
+    #     print(f"LLM Response: {response}")
+    #     self.set_status(status="speaking", reply=response)
 
-        # Text-to-speech
-        print("Converting response to speech...")
-        tts_text = self.clean_for_tts(response)
-        speech = self.generate_speech(tts_text)
+    #     # Text-to-speech
+    #     print("Converting response to speech...")
+    #     tts_text = self.clean_for_tts(response)
+    #     speech = self.generate_speech(tts_text)
 
-        # this should return a tuple that provides a recommended animation
-        return False
+    #     # this should return a tuple that provides a recommended animation
+    #     return False
 
     # ------------------------------------------------------------------
     # Input handling

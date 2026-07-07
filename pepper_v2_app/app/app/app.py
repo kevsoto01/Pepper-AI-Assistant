@@ -75,9 +75,35 @@ class AppController:
         self.set_status(status="idle")
 
         audio_input = self.get_audio_input()
-        if audio_input is None: return
-        if self.should_stop_agent or self.should_stop_app:return
+        if (audio_input is None 
+            or self.should_stop_agent 
+            or self.should_stop_app): 
+            return
         
+        # start of refactoring 
+
+        print("Transcribing...")
+        user_text, detected_language = self.agent.transcribe_audio(audio_input)
+
+        print(f"Heard: {user_text} ({detected_language})")
+        self.set_status(status="thinking", heard=user_text)
+
+        # Answer Generation
+        print("Generating response...")
+        response = self.agent.generate_response(user_text, detected_language)
+        response = self.response_router(user_text, detected_language, use_llm=use_llm)
+        response = self.remove_formatting(response)
+
+        print(f"LLM Response: {response}")
+        self.set_status(status="speaking", reply=response)
+
+        # Text-to-speech
+        print("Converting response to speech...")
+        tts_text = self.agent.clean_for_tts(response)
+        speech = self.agent.generate_speech(tts_text)
+
+        # end of refactoring 
+
         use_llm = self.localui.get_ui_state()["use_llm_filter_var"].get()
         should_sing = self.agent.answer_question(audio_input, use_llm=use_llm)
         if self.should_stop_agent or self.should_stop_app:return
