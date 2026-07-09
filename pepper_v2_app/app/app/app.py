@@ -63,7 +63,7 @@ class AppController:
                 self.stop_agent_services()
                 continue
 
-            self.agent_dialogue_cycle()
+            self.agent_dialogue_cycle() #  g
 
         self.stop_app(close_ui=False)
 
@@ -88,7 +88,24 @@ class AppController:
         print(f"Heard: {user_text} ({detected_language})")
         self.set_status(status="thinking", heard=user_text)
 
-        # Answer Generation
+        if detected_language not in self.valid_languages or user_text.strip() == "":
+                return self.agent.handle_misheard_input()
+
+        if self.check_safety(user_text, override=False, use_llm=use_llm):
+            return self.handle_valid_input(user_text, detected_language, use_llm=use_llm)
+            
+            return self.handle_filtered_content()
+
+        def handle_valid_input(self, user_text, detected_language, use_llm) -> str:
+            ai_response = self.generate_response(user_text, detected_language)
+            filtered_ai_response = self.llm_response_safety_filter(ai_response, use_llm=use_llm)
+            return filtered_ai_response
+
+        def handle_filtered_content(self) -> str:
+            return "Sorry, I can't help you with that."
+
+        def handle_misheard_input(self) -> str:
+            return "I don't think I heard you right."
         print("Generating response...")
         response = self.agent.generate_response(user_text, detected_language)
         response = self.response_router(user_text, detected_language, use_llm=use_llm)
