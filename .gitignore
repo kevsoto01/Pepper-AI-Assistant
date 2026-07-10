@@ -1,5 +1,6 @@
 __pycache__/
 trash/
+tests/
 *.wav
 *.pyc
 *.pyo
