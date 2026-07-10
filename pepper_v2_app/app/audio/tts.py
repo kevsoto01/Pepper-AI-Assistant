@@ -1,9 +1,8 @@
 import winsound
 import wave
-import sys
+import gc
 from pathlib import Path
 from ..utils.paths import LOCAL_PEPPER_AUDIO, PIPER_DIR, PIPER_MODEL_DIR
-# if str(PIPER_DIR) not in sys.path: sys.path.insert(0, str(PIPER_DIR))
 from piper.voice import PiperVoice
 from piper.voice import SynthesisConfig
 
@@ -32,7 +31,14 @@ class PiperTTS:
         for language, path in PIPER_MODEL_DIR.items():
             model_path = Path(path)
             self.voice[language] = PiperVoice.load(model_path)
-        
+
+    def unload(self):
+        try: winsound.PlaySound(None, winsound.SND_PURGE)
+        except Exception: pass
+        self.voice.clear()
+        gc.collect()
+        print("Piper TTS unloaded.")
+
     def generate_speech(self, text, language):   
         with wave.open(self.audio_dir, "wb") as wav_file:
             self.voice[language].synthesize_wav(text, wav_file, syn_config=self.syn_config)
@@ -46,42 +52,3 @@ class PiperTTS:
     
     def play_audio_locally(self):
         winsound.PlaySound(self.audio_dir, winsound.SND_FILENAME)
-
-# def init_TTS():
-    
-#     voice_model = {}
-    
-#     for language, path in PIPER_MODEL_DIR.items():
-#         model_path = Path(path)
-#         voice_model[language] = PiperVoice.load(model_path)
-    
-#     return voice_model
-
-
-# def speech_config():
-    
-#     config = {
-#         'noise_scale': 0.7,
-#         'length_scale': 0.9,
-#         'noise_w': 0.75
-#         }   
-    
-#     syn_config = SynthesisConfig(
-#         noise_scale = config['noise_scale'],
-#         length_scale= config['length_scale'],
-#         noise_w_scale = config['noise_w'],
-#     )
-    
-#     return syn_config
-
-
-# def generate_speech(text, voice, syn_config):   
-    
-#     with wave.open(str(LOCAL_PEPPER_AUDIO), "wb") as wav_file:
-#         voice.synthesize_wav(text, wav_file, syn_config=syn_config)
-    
-#     return str(LOCAL_PEPPER_AUDIO) 
-
-
-# def speak_local(audio):
-#     winsound.PlaySound(audio, winsound.SND_FILENAME)

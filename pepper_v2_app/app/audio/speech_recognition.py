@@ -1,5 +1,6 @@
 import torch
 from faster_whisper import WhisperModel
+import gc
 
 class WhisperTranscriber:
     
@@ -13,6 +14,19 @@ class WhisperTranscriber:
         self.compute_type = "float16" if self.device == "cuda" else "int8"
         self.whisper_model = WhisperModel(whisper_model, device=self.device, compute_type=self.compute_type)
         
+
+    def unload(self):
+        if hasattr(self, "whisper_model"):
+            del self.whisper_model
+            self.whisper_model = None
+
+        gc.collect()
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.ipc_collect()
+
+    print("Whisper transcriber unloaded.")
     def transcribe_audio(self, audio):
         if not audio:
             return ""
