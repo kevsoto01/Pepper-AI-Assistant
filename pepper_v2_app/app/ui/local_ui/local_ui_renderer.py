@@ -126,23 +126,36 @@ class LocalUIRenderer:
 
         self.use_pepper_checkbox = self._pack(
             self.template.checkbutton(
-                text="Pepper Robot",
+                text="Connect to Pepper robot",
                 variable=state_vars["use_pepper_var"],
+            )
+        )
+
+        self.local_audio_checkbox = self._pack(
+            self.template.checkbutton(
+                text="Play audio locally (only if using Pepper)",
+                variable=state_vars["use_local_audio_var"],
             )
         )
 
         self.use_web_ui_checkbox = self._pack(
             self.template.checkbutton(
-                text="Web UI",
+                text="Use web UI",
                 variable=state_vars["use_web_ui_var"],
             )
         )
 
         self.use_llm_filter_checkbox = self._pack(
             self.template.checkbutton(
-                text="LLM Filter",
+                text="Use AI-powered content safety filter (recommended)",
                 variable=state_vars["use_llm_filter_var"],
             )
+        )
+
+        self.whisper_model_combobox = self._add_labeled_combobox(
+            "Speech Recognition Model",
+            self.sr_options,
+            state_vars["whisper_model_var"],
         )
 
         self.writer_model_combobox = self._add_labeled_combobox(
@@ -156,12 +169,16 @@ class LocalUIRenderer:
             self.llm_options,
             state_vars["judge_model_var"],
         )
-
-        self.whisper_model_combobox = self._add_labeled_combobox(
-            "Speech Recognition Model",
-            self.sr_options,
-            state_vars["whisper_model_var"],
+        
+        self.llm_model_warning = self._pack(
+            self.template.label(
+                text="Warning: writer and judge LLMs should be different for proper functionality",
+                foreground="red",
+                font=tkfont.nametofont("TkDefaultFont").copy().configure(size=2)
+            )
         )
+
+        
 
         button_frame = ttk.Frame(self.content_frame)
         button_frame.pack(fill="x", pady=(16, 0))

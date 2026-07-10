@@ -12,18 +12,18 @@ class LocalUIController:
         self.ui_state: dict[str, tk.Variable] = {}
 
         # "ui_state_var": ("app_state_group", "app_state_key")
-        self.ui_to_config_translator = {
-            "use_pepper_var": ("general", "use_pepper"),
-            "pepper_volume_var": ("general", "pepper_volume"),
-            "use_web_ui_var": ("general", "use_web_ui"),
+        # self.ui_to_config_translator = {
+        #     "use_pepper_var": ("general", "use_pepper"),
+        #     "pepper_volume_var": ("general", "pepper_volume"),
+        #     "use_web_ui_var": ("general", "use_web_ui"),
 
-            "writer_model_var": ("writer_llm", "model"),
-            "judge_model_var": ("judge_llm", "model"),
-            "whisper_model_var": ("speech_recognition", "model"),
+        #     "writer_model_var": ("writer_llm", "model"),
+        #     "judge_model_var": ("judge_llm", "model"),
+        #     "whisper_model_var": ("speech_recognition", "model"),
 
-            "show_launcher_var": ("local_ui", "show_launcher"),
-            "show_control_panel_var": ("local_ui", "show_control_panel"),
-        }
+        #     "show_launcher_var": ("local_ui", "show_launcher"),
+        #     "show_control_panel_var": ("local_ui", "show_control_panel"),
+        # }
 
     # ------------------------------------------------------------------
     # Tk state helpers
@@ -34,6 +34,7 @@ class LocalUIController:
 
         self.ui_state = {
             "use_pepper_var": tk.BooleanVar(master=self.root, value=False),
+            "use_local_audio_var": tk.BooleanVar(master=self.root, value=False),
             "pepper_volume_var": tk.IntVar(master=self.root, value=50),
             "use_web_ui_var": tk.BooleanVar(master=self.root, value=False),
             "use_llm_filter_var": tk.BooleanVar(master=self.root, value=True),
