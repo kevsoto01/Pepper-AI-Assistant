@@ -26,7 +26,8 @@ class WhisperTranscriber:
             torch.cuda.empty_cache()
             torch.cuda.ipc_collect()
 
-    print("Whisper transcriber unloaded.")
+        print("Whisper transcriber unloaded.")
+        
     def transcribe_audio(self, audio):
         if not audio:
             return ""

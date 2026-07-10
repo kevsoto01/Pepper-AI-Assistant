@@ -15,7 +15,7 @@ class AIAgentController:
         self.llm = llm_system
         self.tts = piper
 
-        self.valid_languages = ["en","es"] #self.config_controller.get_setting("general", "languages")
+         
         self.age = 100 #self.config_controller.get_setting("general", "user_age")
 
         self.status_callback = None

@@ -20,7 +20,7 @@ class LLMSystem:
     
     def load(self, writer_model:str, judge_model:str) -> None:
         print("Loading LLM system...")
-        self.launcher = OllamaLauncher(use_vulkan=False, force_restart=True)
+        self.launcher = OllamaLauncher(use_vulkan=True, force_restart=True)
         self.launcher.start_ollama()
         self.models.load(writer_model, judge_model)
 

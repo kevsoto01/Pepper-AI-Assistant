@@ -29,6 +29,8 @@ class AppController:
         self.webui_running = False
         self.agent_running = False
 
+        self.valid_languages = ["en","es"] #self.config_controller.get_setting("general", "languages")
+
     # spaghetti
     def agent_dialogue_cycle(self):
         self.set_status(status="idle")
@@ -40,7 +42,6 @@ class AppController:
             return
 
         print("Transcribing...")
-        self.set_status(status="thinking", heard="", reply="")
         user_text, detected_language = self.agent.transcribe_audio(audio_input)
 
         print(f"Heard: {user_text} ({detected_language})")
@@ -49,6 +50,8 @@ class AppController:
         print("Generating response...")
         use_llm_filter = self.localui.get_ui_state()["use_llm_filter_var"].get()
 
+        action = "NONE"
+        
         if detected_language not in self.valid_languages or user_text.strip() == "":
             response = "I don't think I heard you right."
 
@@ -63,10 +66,10 @@ class AppController:
                 response = "Sorry, I can't help you with that."
             else: response = text_processing.remove_formatting(response)
 
-            self.set_status(status="speaking", reply=response)
+            self.set_status(status="speaking", heard=user_text, reply=response)
 
         print("Converting response to speech...")
-        tts_text = text_processing.clean_for_tts(response)
+        tts_text = text_processing.normalize_numbers_for_tts(response)
         self.agent.generate_speech(tts_text)
         
         should_play_audio_thru_pepper = True # placeholder for UI checkbox
@@ -118,8 +121,6 @@ class AppController:
             listen_key = self.listen_key,
             exit_key = self.exit_key
         )
-
-        self.agent.set_callback(self.set_status)
 
     def app_loop(self):
         self.counter = 0 

@@ -68,8 +68,8 @@ class OllamaLauncher:
         subprocess.Popen(
             ["ollama", "serve"],
             env=env,
-            # stdout=subprocess.DEVNULL,
-            # stderr=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
         )
         
