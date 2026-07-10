@@ -70,3 +70,17 @@ class LLMSystem:
         if birthday_song_intent == "OTHER": return False
         print("Unexpected birthday song intent classification, classifying as other.")
         return False
+
+    def get_action(self, user_text):
+        pseudocode = """
+
+        if should_i_sing: return "SING"
+        elif should_i_wave: return "WAVE"
+        elif should_i_dance: return "DANCE"
+        else: return "BODYTALK"
+        
+        """
+
+        return "BODYTALK" # temporary
+
+        

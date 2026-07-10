@@ -1,5 +1,6 @@
 from time import sleep
 import threading
+from ..utils import text_processing
 
 class AppController:
     def __init__(
@@ -27,6 +28,77 @@ class AppController:
         self.pepper_running = False
         self.webui_running = False
         self.agent_running = False
+
+    # spaghetti
+    def agent_dialogue_cycle(self):
+        self.set_status(status="idle")
+
+        audio_input = self.get_audio_input()
+        if (audio_input is None 
+            or self.should_stop_agent 
+            or self.should_stop_app): 
+            return
+
+        print("Transcribing...")
+        self.set_status(status="thinking", heard="", reply="")
+        user_text, detected_language = self.agent.transcribe_audio(audio_input)
+
+        print(f"Heard: {user_text} ({detected_language})")
+        self.set_status(status="thinking", heard=user_text)
+
+        print("Generating response...")
+        use_llm_filter = self.localui.get_ui_state()["use_llm_filter_var"].get()
+
+        if detected_language not in self.valid_languages or user_text.strip() == "":
+            response = "I don't think I heard you right."
+
+        elif not self.agent.is_content_safe(user_text, use_regex=True, use_llm=use_llm_filter):
+            response = "Sorry, I can't help you with that."
+        
+        else:
+            action, response = self.agent.generate_response(user_text, detected_language, get_action=self.pepper_running)
+            print(f"LLM Response: {response}")
+
+            if not self.agent.is_content_safe(response, use_regex=True, use_llm=use_llm_filter):
+                response = "Sorry, I can't help you with that."
+            else: response = text_processing.remove_formatting(response)
+
+            self.set_status(status="speaking", reply=response)
+
+        print("Converting response to speech...")
+        tts_text = text_processing.clean_for_tts(response)
+        self.agent.generate_speech(tts_text)
+        
+        should_play_audio_thru_pepper = True # placeholder for UI checkbox
+        # should_play_audio_thru_pepper = self.localui.get_ui_state()["use_pepper_audio_var"].get()
+        if should_play_audio_thru_pepper and self.pepper_running:
+            self.pepper.play_audio()
+        else: 
+            self.agent.tts.play_audio_locally()
+       
+        pseudocode = """
+        if self.pepper_running: 
+            if action == "SING": 
+                self.pepper.sing_happy_birthday()
+            elif action == "WAVE":
+                self.pepper.wave()
+            ...
+            elif action == "BODYTALK"
+                self.pepper.body_talk(duration_seconds)
+        """
+        
+        if action == "NONE":
+            pass
+
+        elif action == "BODYTALK": 
+            duration_seconds = self.agent.tts.get_wav_duration_seconds()
+            self.pepper.body_talk(duration_seconds)
+            sleep(self.agent.tts.get_wav_duration_seconds()-1)
+
+        elif action == "SING":         
+            self.set_status(status="speaking", reply="Sure!")
+            self.pepper.sing_happy_birthday()
+
 
     def run(self):
         self.initialize_app()
@@ -71,75 +143,6 @@ class AppController:
         self.stop_agent_services()
         if close_ui: self.localui.stop()
 
-    def agent_dialogue_cycle(self):
-        self.set_status(status="idle")
-
-        audio_input = self.get_audio_input()
-        if (audio_input is None 
-            or self.should_stop_agent 
-            or self.should_stop_app): 
-            return
-        
-        # start of refactoring 
-
-        print("Transcribing...")
-        user_text, detected_language = self.agent.transcribe_audio(audio_input)
-
-        print(f"Heard: {user_text} ({detected_language})")
-        self.set_status(status="thinking", heard=user_text)
-
-        if detected_language not in self.valid_languages or user_text.strip() == "":
-                return self.agent.handle_misheard_input()
-
-        if self.check_safety(user_text, override=False, use_llm=use_llm):
-            return self.handle_valid_input(user_text, detected_language, use_llm=use_llm)
-            
-            return self.handle_filtered_content()
-
-        def handle_valid_input(self, user_text, detected_language, use_llm) -> str:
-            ai_response = self.generate_response(user_text, detected_language)
-            filtered_ai_response = self.llm_response_safety_filter(ai_response, use_llm=use_llm)
-            return filtered_ai_response
-
-        def handle_filtered_content(self) -> str:
-            return "Sorry, I can't help you with that."
-
-        def handle_misheard_input(self) -> str:
-            return "I don't think I heard you right."
-        print("Generating response...")
-        response = self.agent.generate_response(user_text, detected_language)
-        response = self.response_router(user_text, detected_language, use_llm=use_llm)
-        response = self.remove_formatting(response)
-
-        print(f"LLM Response: {response}")
-        self.set_status(status="speaking", reply=response)
-
-        # Text-to-speech
-        print("Converting response to speech...")
-        tts_text = self.agent.clean_for_tts(response)
-        speech = self.agent.generate_speech(tts_text)
-
-        # end of refactoring 
-
-        use_llm = self.localui.get_ui_state()["use_llm_filter_var"].get()
-        should_sing = self.agent.answer_question(audio_input, use_llm=use_llm)
-        if self.should_stop_agent or self.should_stop_app:return
-        
-        if False:
-        # if should_sing:
-            if self.pepper_running: 
-                self.set_status(status="speaking", reply="Sure!")
-                self.pepper.sing_happy_birthday()
-            else: print("Cannot sing happy birthday, pepper not connected.")
-
-        else:
-            if self.pepper_running: 
-                duration_seconds = self.agent.tts.get_wav_duration_seconds()
-                self.pepper.body_talk(duration_seconds)
-                self.pepper.play_audio()
-                sleep(self.agent.tts.get_wav_duration_seconds()-1)
-            else: self.agent.tts.play_audio_locally()
-       
     def get_audio_input(self):
         # self.state.set_status("idle")
         # self.state.clear_exchange_text()
