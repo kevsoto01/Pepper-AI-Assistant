@@ -1,10 +1,10 @@
 import paramiko
-from ..security.details import DEFAULT_SSH_DETAILS
+from ..security.details import get_ssh_details
 
 class SSHManager:
    
     def __init__(self):
-       self.ssh_details = DEFAULT_SSH_DETAILS
+       self.ssh_details = get_ssh_details()
        self.ssh = None
        self.sftp = None
     
