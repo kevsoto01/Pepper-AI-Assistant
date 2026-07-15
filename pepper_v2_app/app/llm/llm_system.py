@@ -5,7 +5,7 @@ from .writers.answer_simplifier import AnswerSimplifier
 
 # Import Judges
 from .judges.safety_verifier import ChildSafetyVerifier
-from .judges.answer_complexity_classifier import AnswerComplexityClassifier
+from ...tests.answer_complexity_classifier import AnswerComplexityClassifier
 from .judges.response_movement_router import ResponseMovementRouter
 from .judges.birthday_request_classifier import BirthdaySongRequestClassifier
 
