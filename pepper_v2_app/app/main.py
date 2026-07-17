@@ -63,7 +63,8 @@ def run_assistant():
     agent_controller = AIAgentController(
             llm_system=llm_system,
             whisper=whisper,
-            piper=piper
+            piper=piper,
+            config=config_manager
         )
 
     # App

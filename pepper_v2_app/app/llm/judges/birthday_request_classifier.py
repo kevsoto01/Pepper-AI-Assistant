@@ -55,7 +55,7 @@ class BirthdaySongRequestClassifier:
             OTHER
             """
 
-    def check_happy_birthday_intent(self, user_text) -> bool:
+    def classify(self, user_text) -> bool:
         prompt = self.model.generate_prompt(user_text, self.system_instruction)
         intent_classification = self.model.generate_response(prompt)
 

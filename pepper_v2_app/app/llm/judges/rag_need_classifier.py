@@ -1,7 +1,3 @@
-"""
-DONT USE
-"""
-
 class RagNeedClassifier:
     def __init__(self, model):
         self.model = model
@@ -36,7 +32,7 @@ class RagNeedClassifier:
             Do not explain your decision. Do not return punctuation or additional text.
         """
         
-    def classify_rag_need(self, user_text) -> str:
+    def classify(self, user_text) -> str:
         prompt = self.model.generate_prompt(user_text, self.system_instruction)
         rag_classification = self.model.generate_response(prompt)
     

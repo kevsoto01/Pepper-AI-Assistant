@@ -84,9 +84,6 @@ class ConfigManager:
         self.config_path = Path(CONFIG_PATH)
         self.default_config = DEFAULT_CONFIG
 
-    # ------------------------------------------------------------------
-    # JSON helpers
-    # ------------------------------------------------------------------
     def _read_json_file(self, path: Path) -> dict[str, Any]:
         with path.open("r", encoding="utf-8") as file: 
             data = json.load(file)
@@ -109,9 +106,6 @@ class ConfigManager:
 
         os.replace(temp_path, path)
 
-    # ------------------------------------------------------------------
-    # Config loading / reset
-    # ------------------------------------------------------------------
     def _read_config(self) -> dict[str, Any]:
         try:
             return self._read_json_file(self.config_path)
@@ -126,9 +120,6 @@ class ConfigManager:
         self._write_json_file(self.config_path, self.default_config)
         return self.default_config
 
-    # ------------------------------------------------------------------
-    # Public Methods
-    # ------------------------------------------------------------------
     def get_config(self) -> dict[str, Any]:
         return self._read_config()
 

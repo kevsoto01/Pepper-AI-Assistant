@@ -40,24 +40,14 @@ class ResponseMovementRouter:
             - Use "body_talk" for normal conversational responses that do not fit the other movement types.
             """
 
-    def classify_movement(
-        self,
-        assistant_text: str,
-        user_text: str = "",
-    ) -> str:
+    def classify(self, assistant_text: str, user_text: str = "") -> str:
         system_instruction = self.system_instruction.format(
             allowed_movements=", ".join(self.allowed_movements)
         )
 
-        input_text = self._build_input_text(
-            user_text=user_text,
-            assistant_text=assistant_text,
-        )
+        input_text = self._build_input_text(user_text=user_text,assistant_text=assistant_text,)
 
-        prompt = self.model.generate_prompt(
-            input_text,
-            system_instruction,
-        )
+        prompt = self.model.generate_prompt(input_text,system_instruction)
 
         raw_movement = self.model.generate_response(prompt)
 

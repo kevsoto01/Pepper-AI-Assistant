@@ -57,7 +57,7 @@ class RagQueryOptimizer:
         Question: when was electricity discovered?
         """
         
-    def optimize_rag_query(self, user_text, age:int) -> str:
+    def optimize(self, user_text, age:int) -> str:
         prompt = self.model.generate_prompt(user_text, self.system_instruction.format(age=age))
         optimized_rag_query = self.model.generate_response(prompt)
         return optimized_rag_query

@@ -29,7 +29,7 @@ class AppController:
         self.webui_running = False
         self.agent_running = False
 
-        self.valid_languages = ["en","es"] #self.config_controller.get_setting("general", "languages")
+        self.valid_languages = self.config.get_config_value("general", "languages")
 
     # spaghetti
     def agent_dialogue_cycle(self):
@@ -49,8 +49,6 @@ class AppController:
 
         print("Generating response...")
         use_llm_filter = self.localui.get_ui_state()["use_llm_filter_var"].get()
-
-        action = "NONE"
         
         if detected_language not in self.valid_languages or user_text.strip() == "":
             response = "I don't think I heard you right."
@@ -59,7 +57,7 @@ class AppController:
             response = "Sorry, I can't help you with that."
         
         else:
-            action, response = self.agent.generate_response(user_text, detected_language, get_action=self.pepper_running)
+            response = self.agent.generate_response(user_text, detected_language)
             print(f"LLM Response: {response}")
 
             if not self.agent.is_content_safe(response, use_regex=True, use_llm=use_llm_filter):

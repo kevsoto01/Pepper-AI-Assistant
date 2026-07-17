@@ -56,15 +56,15 @@ class ChildSafetyVerifier:
         """
            
 
-    def check_safety(self, user_text) -> bool:
+    def classify(self, user_text) -> bool:
         prompt = self.model.generate_prompt(user_text, self.system_instruction)
         safety_classification = self.model.generate_response(prompt)
         print("\nSafety verifier output: '{}'".format(safety_classification))
-        parsed_safety_classification = self.parse_safety_label(safety_classification)
+        parsed_safety_classification = self._parse_safety_label(safety_classification)
         # print("Parsed safety classification: ", parsed_safety_classification)
         return parsed_safety_classification
     
-    def parse_safety_label(self, raw_output: str) -> str:
+    def _parse_safety_label(self, raw_output: str) -> str:
         if not raw_output:
             return "UNSAFE"
     

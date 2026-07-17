@@ -21,10 +21,16 @@ class GeneralKnowledgeRAG:
         ),
     ):
         self.collection_name = collection_name
-        self.client = QdrantClient(path=qdrant_path)
-        self.embedding_model = SentenceTransformer(
-            embedding_model_name
-        )
+        self.qdrant_path = qdrant_path
+        self.embedding_model_name = embedding_model_name
+
+        self.load()
+
+    def load(self):
+
+        print("Loading knowledge base...")
+        self.client = QdrantClient(path=self.qdrant_path)
+        self.embedding_model = SentenceTransformer(self.embedding_model_name)
 
         existing = {
             collection.name
@@ -35,22 +41,11 @@ class GeneralKnowledgeRAG:
             self.client.close()
             raise RuntimeError(
                 f"Collection '{self.collection_name}' was not found "
-                f"at '{qdrant_path}'. Run db_embedder.py first."
+                f"at '{self.qdrant_path}'. Run db_embedder.py first."
             )
 
     def close(self) -> None:
         self.client.close()
-
-    def __enter__(self) -> "GeneralKnowledgeRAG":
-        return self
-
-    def __exit__(
-        self,
-        exc_type,
-        exc_value,
-        traceback,
-    ) -> None:
-        self.close()
 
     def search(
         self,
@@ -90,7 +85,7 @@ class GeneralKnowledgeRAG:
             for result in results
         ]
 
-    def find_context(
+    def build_context(
         self,
         question: str,
         results: list[dict[str, Any]],
@@ -99,9 +94,9 @@ class GeneralKnowledgeRAG:
 
         for index, result in enumerate(results, start=1):
             context_blocks.append(
-                f"[Source {index}]\n"
+                # f"[Source {index}]\n"
                 f"Title: {result.get('title')}\n"
-                f"URL: {result.get('url')}\n"
+                # f"URL: {result.get('url')}\n"
                 f"Text:\n{result.get('text')}"
             )
 
@@ -112,30 +107,6 @@ class GeneralKnowledgeRAG:
         )
 
         return context
-
-    def ask(
-        self,
-        question: str,
-        llm_fn: Callable[[str], str],
-        top_k: int = 5,
-    ) -> dict[str, Any]:
-        results = self.search(
-            query=question,
-            top_k=top_k,
-        )
-
-        prompt = self.build_prompt(
-            question=question,
-            results=results,
-        )
-
-        answer = llm_fn(prompt)
-
-        return {
-            "answer": answer,
-            "sources": results,
-            "prompt": prompt,
-        }
 
     def _build_filter(
         self,
@@ -181,14 +152,15 @@ def run_interactive_search() -> None:
                 top_k=4,
             )
 
-            for index, result in enumerate(results, start=1):
-                print("=" * 80)
-                print(f"Result {index}")
-                print("Title:", result["title"])
-                print("Score:", result["score"])
-                print("URL:", result["url"])
-                print(result["text"][:700])
-
+            # for index, result in enumerate(results, start=1):
+            #     print("=" * 80)
+            #     print(f"Result {index}")
+            #     print("Title:", result["title"])
+            #     print("Score:", result["score"])
+            #     print("URL:", result["url"])
+            #     print(result["text"][:700])
+            context = rag.build_context(question, results)
+            print(context)
 
 if __name__ == "__main__":
     run_interactive_search()

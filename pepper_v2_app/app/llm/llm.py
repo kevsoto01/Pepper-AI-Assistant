@@ -69,8 +69,6 @@ class ModelHub:
         self.judge_temperature = 0.0#self.config_controller.get_setting("judge_llm", "temperature")
         self.judge_num_ctx = 1024#self.config_controller.get_setting("judge_llm", "max_tokens")
         
-        
-        
     def load(self, writer_model:str, judge_model:str) -> None:
         self.apply_config()
 
