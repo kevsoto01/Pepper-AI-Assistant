@@ -1,132 +1,21 @@
-We're no strangers to love
+# Pepper AI Assistant
 
-You know the rules and so do I
+Pepper AI Assistant is an educational AI system developed for **Kidworks USA**. It is designed to help students interact with educational content through natural spoken questions and receive clear, age-appropriate answers.
 
-A full commitment's what I'm thinking of
+The system can record speech, convert it into text, retrieve relevant information from a local knowledge database, generate a child-friendly response, and read the response aloud using text-to-speech.
 
-You wouldn't get this from any other guy
+Pepper AI Assistant can be connected to a **SoftBank Pepper robot**, allowing Pepper to act as an interactive classroom assistant. However, the software does not require a Pepper robot and can also run independently on a computer with a microphone, speakers, and the included user interface.
 
-I just wanna tell you how I'm feeling
+## Intended Use
 
-Gotta make you understand
+This project is intended for:
 
-Never gonna give you up
+- Kidworks USA students and educators
+- Classroom learning activities
+- Educational question-and-answer interactions
+- AI-assisted demonstrations and lessons
+- Development and testing of child-friendly local AI systems
 
-Never gonna let you down
+The project uses local AI models, offline speech recognition, text-to-speech, and retrieval-augmented generation to provide a controlled educational experience without depending entirely on paid cloud APIs.
 
-Never gonna run around and desert you
-
-Never gonna make you cry
-
-Never gonna say goodbye
-
-Never gonna tell a lie and hurt you
-
-We've known each other for so long
-
-Your heart's been aching, but you're too shy to say it
-
-Inside, we both know what's been going on
-
-We know the game, and we're gonna play it
-
-And if you ask me how I'm feeling
-
-Don't tell me you're too blind to see
-
-Never gonna give you up
-
-Never gonna let you down
-
-Never gonna run around and desert you
-
-Never gonna make you cry
-
-Never gonna say goodbye
-
-Never gonna tell a lie and hurt you
-
-Never gonna give you up
-
-Never gonna let you down
-
-Never gonna run around and desert you
-
-Never gonna make you cry
-
-Never gonna say goodbye
-
-Never gonna tell a lie and hurt you
-
-Ooh (Give you up)
-
-Ooh-ooh (Give you up)
-
-Ooh (Never gonna give, never gonna give)
-
-Give you up
-
-Ooh-ooh (Never gonna give, never gonna give)
-
-Give you up
-
-We've known each other for so long
-
-Your heart's been aching, but you're too shy to say it
-
-Inside, we both know what's been going on
-
-We know the game, and we're gonna play it
-
-I just wanna tell you how I'm feeling
-
-Gotta make you understand
-
-Never gonna give you up
-
-Never gonna let you down
-
-Never gonna run around and desert you
-
-Never gonna make you cry
-
-Never gonna say goodbye
-
-Never gonna tell a lie and hurt you
-
-Never gonna give you up
-
-Never gonna let you down
-
-Never gonna run around and desert you
-
-Never gonna make you cry
-
-Never gonna say goodbye
-
-Never gonna tell a lie and hurt you
-
-Never gonna give you up
-
-Never gonna let you down
-
-Never gonna run around and desert you
-
-Never gonna make you cry
-
-Never gonna say goodbye
-
-Never gonna tell a lie and hurt you
-
-Never gonna give you up
-
-Never gonna let you down
-
-Never gonna run around and desert you
-
-Never gonna make you cry
-
-Never gonna say goodbye
-
-Never gonna tell a lie and hurt you
-
+> This project is currently under active development and should be used with adult supervision in educational environments.
