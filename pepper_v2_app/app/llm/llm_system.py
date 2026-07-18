@@ -10,6 +10,7 @@ from .judges.answer_complexity_classifier import AnswerComplexityClassifier
 from .judges.response_movement_router import ResponseMovementRouter
 from .judges.birthday_request_classifier import BirthdaySongRequestClassifier
 from .judges.rag_need_classifier import RagNeedClassifier
+from .judges.dance_request_classifier import DanceRequestClassifier
 
 # Import RAG Engine
 from .rag.qdrant_db_rag import GeneralKnowledgeRAG
@@ -41,7 +42,8 @@ class LLMSystem:
         self.child_safety_verifier = ChildSafetyVerifier(judge)
         self.complexity_classifier = AnswerComplexityClassifier(judge)
         self.rag_need_classifier = RagNeedClassifier(judge)
-
+        self.dance_request_classifier = DanceRequestClassifier(judge)
+        
         self.rag = GeneralKnowledgeRAG()
 
         print("LLM system ready.")

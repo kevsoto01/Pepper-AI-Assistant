@@ -2,3 +2,4 @@ keyboard
 ollama
 piper-tts
 faster-whisper
+qdrant_client

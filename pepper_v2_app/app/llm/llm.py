@@ -89,7 +89,7 @@ class ModelHub:
                 model = judge_model,
                 temperature = self.judge_temperature,
                 keep_alive = '30m',
-                num_predict = 2,
+                num_predict = 4,
                 num_ctx = self.judge_num_ctx,
                 )
             )

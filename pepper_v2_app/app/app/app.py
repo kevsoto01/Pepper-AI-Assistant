@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 import threading
 from ..utils import text_processing
 
@@ -48,7 +48,10 @@ class AppController:
         self.set_status(status="thinking", heard=user_text)
 
         print("Generating response...")
+        timer = 1000*time()
         use_llm_filter = self.localui.get_ui_state()["use_llm_filter_var"].get()
+        should_pepper_perform_actions = True # PLACEHOLDER - self.localui.get_ui_state()["perform_pepper_actions"].get()
+        action = "NONE"
         
         if detected_language not in self.valid_languages or user_text.strip() == "":
             response = "I don't think I heard you right."
@@ -57,37 +60,41 @@ class AppController:
             response = "Sorry, I can't help you with that."
         
         else:
-            response = self.agent.generate_response(user_text, detected_language)
-            print(f"LLM Response: {response}")
+            if not self.pepper_running:
+                action = "NONE"
+            elif should_pepper_perform_actions:
+                action = self.agent.identify_appropriate_action(user_text)
+            else: 
+                action = "BODYTALK"
 
-            if not self.agent.is_content_safe(response, use_regex=True, use_llm=use_llm_filter):
-                response = "Sorry, I can't help you with that."
-            else: response = text_processing.remove_formatting(response)
+            print(f"Action: '{action}'")
+            action = "NONE"
 
-            self.set_status(status="speaking", heard=user_text, reply=response)
+            if action=="BODYTALK" or action=="NONE":
+                context = self.agent.get_relevant_info_for_user_question(user_text)
+                raw_response = self.agent.generate_response(user_text, context, detected_language)
+                response = self.agent.simplify_response(user_text, raw_response)
 
+                if not self.agent.is_content_safe(response, use_regex=True, use_llm=use_llm_filter):
+                    response = "Sorry, I can't help you with that."
+                else: 
+                    response = text_processing.remove_formatting(response)
+
+        print("Answer retrieved within {} ms of transcribing user input.".format(
+            str(int(1000*time()-timer))
+        ))
+        
         print("Converting response to speech...")
+        self.set_status(status="speaking", heard=user_text, reply=response)
         tts_text = text_processing.normalize_numbers_for_tts(response)
         self.agent.generate_speech(tts_text)
         
-        should_play_audio_thru_pepper = True # placeholder for UI checkbox
-        # should_play_audio_thru_pepper = self.localui.get_ui_state()["use_pepper_audio_var"].get()
+        should_play_audio_thru_pepper = True # placeholder for UI checkbox - self.localui.get_ui_state()["use_pepper_audio_var"].get()
         if should_play_audio_thru_pepper and self.pepper_running:
             self.pepper.play_audio()
         else: 
             self.agent.tts.play_audio_locally()
-       
-        pseudocode = """
-        if self.pepper_running: 
-            if action == "SING": 
-                self.pepper.sing_happy_birthday()
-            elif action == "WAVE":
-                self.pepper.wave()
-            ...
-            elif action == "BODYTALK"
-                self.pepper.body_talk(duration_seconds)
-        """
-        
+
         if action == "NONE":
             pass
 
@@ -99,6 +106,10 @@ class AppController:
         elif action == "SING":         
             self.set_status(status="speaking", reply="Sure!")
             self.pepper.sing_happy_birthday()
+
+        elif action == "DANCE":
+            self.set_status(status="speaking", reply="Sure!")
+            self.pepper.sing_happy_birthday() # PLACEHOLDER FOR DANCING METHOD
 
 
     def run(self):

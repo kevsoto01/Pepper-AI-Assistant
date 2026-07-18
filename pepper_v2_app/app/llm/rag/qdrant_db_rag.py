@@ -43,7 +43,7 @@ class GeneralKnowledgeRAG:
                 f"Collection '{self.collection_name}' was not found "
                 f"at '{self.qdrant_path}'. Run db_embedder.py first."
             )
-
+        print("Knowledge base ready...")
     def close(self) -> None:
         self.client.close()
 

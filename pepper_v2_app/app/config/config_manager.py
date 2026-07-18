@@ -13,13 +13,13 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "word_count": 30,
     },
     "writer_llm": {
-        "model": "qwen2.5:0.5b-instruct-q4_K_M",
+        "model": "qwen2.5:3b-instruct-q4_K_M",
         "temperature": 0.0,
         "max_tokens": 4096,
         "default_model": "qwen2.5:3b-instruct-q4_K_M",
     },
     "judge_llm": {
-        "model": "qwen2.5:0.5b-instruct-q4_K_M",
+        "model": "qwen2.5:1.5b-instruct-q4_K_M",
         "temperature": 0.0,
         "max_tokens": 256,
         "default_model": "qwen2.5:3b-instruct-q4_K_M",
